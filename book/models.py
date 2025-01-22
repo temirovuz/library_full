@@ -1,3 +1,5 @@
+import re
+
 from django.db import models
 from django.db.models import CASCADE
 
@@ -15,7 +17,7 @@ class Base(models.Model):
 
 class Author(Base):
     name = models.CharField(max_length=255, unique=True)
-    cleaned_name = models.CharField(max_length=255)
+    cleaned_name = models.CharField(max_length=255, blank=True)
     description = models.TextField()
 
     def save(self, *args, **kwargs):
@@ -33,7 +35,7 @@ class Author(Base):
 
 class Genre(Base):
     name = models.CharField(max_length=255, unique=True)
-    cleaned_name = models.CharField(max_length=255)
+    cleaned_name = models.CharField(max_length=255, blank=True)
 
     def save(self, *args, **kwargs):
         self.cleaned_name = re.sub(r"[^a-zA-Z0-9\s]", "", self.name).lower().strip()
@@ -50,10 +52,10 @@ class Genre(Base):
 
 class Language(Base):
     lang = models.CharField(max_length=255, unique=True)
-    cleaned_lang = models.CharField(max_length=255)
+    cleaned_lang = models.CharField(max_length=255, blank=True)
 
     def save(self, *args, **kwargs):
-        self.cleaned_lang = re.sub(r"[^a-zA-Z0-9\s]", "", self.name).lower().strip()
+        self.cleaned_lang = re.sub(r"[^a-zA-Z0-9\s]", "", self.lang).lower().strip()
         super().save(*args, **kwargs)
 
     class Meta:
@@ -67,7 +69,7 @@ class Language(Base):
 
 class Book(Base):
     name = models.CharField(max_length=255)
-    cleaned_name = models.CharField(max_length=255)
+    cleaned_name = models.CharField(max_length=255, blank=True)
     isbn = models.CharField('ISBN', max_length=13, unique=True)
     summary = models.TextField(max_length=1000, help_text='Enter a brief description of the book')
     publication_date = models.DateField(null=True, blank=True)
