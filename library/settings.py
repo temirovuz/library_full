@@ -1,12 +1,16 @@
+import os.path
+
 import environ
 from pathlib import Path
-
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env(
     DEVUG=(bool, False),
     ALLOWED_HOSTS=(list, ['*'])
 )
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 SECRET_KEY = env('SECRET_KEY')
 
@@ -25,7 +29,8 @@ INSTALLED_APPS = [
 ]
 
 LOCAL_APPS = [
-
+    'user',
+    'book',
 ]
 
 INSTALL_APPS = [
@@ -64,14 +69,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'library.wsgi.application'
 
+AUTH_USER_MODEL = 'user.User'
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': env('NAME'),
-        'USER': env('USER'),
-        'PASSWORD': env('PASSWORD'),
-        'HOST': env('HOST'),
-        'PORT': env('PORT'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env.str('NAME'),
+        'USER': env.str('USER'),
+        'PASSWORD': env.str('PASSWORD'),
+        'HOST': env.str('HOST'),
+        'PORT': env.int('PORT'),
     }
 }
 
