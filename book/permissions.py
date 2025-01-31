@@ -1,7 +1,11 @@
 from rest_framework import permissions
 
+
 class IsAdmin(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
+    def has_permission(self, request, view):
+        # Admin uchun barcha ruxsatlar
+        if request.user.is_authenticated and request.user.role == "admin":
             return True
-        return request.user.role == 'admin'
+
+        # Oddiy foydalanuvchilar uchun faqat o'qish huquqi
+        return request.method in permissions.SAFE_METHODS
